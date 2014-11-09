@@ -1,10 +1,19 @@
 <html>
 
 	<head>
-		<link rel="stylesheet" type="text/css" href="interface.css" />
+		<link rel="stylesheet" type="text/css" href="static/interface.css" />
+		<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />-->
+		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
 	</head>
 	<body>
 		<div id="header">
+			<div class="toggler">
+				<div id="flash-alert">
+					<span id="flash">alert</span>
+				</div>
+			</div>
 		<h1>ZombINCremental</h1>
 		</div>
 
@@ -16,6 +25,13 @@
 					<div id="levelPercent"></div>
 				</div>
 			</div>
+			<div class="enemyHP">
+				<div id="hpamount">Zombie HP:</div>
+				<div id="HP">
+					<div id="hppercent"></div>
+				</div>
+			</div>
+		Z Killed: <span id="zombieKills">0</span><br />
 
 		Money: $<span id="money">0</span><br />
 		Income: $<span id="income">0</span> /s <br />
@@ -25,12 +41,18 @@
 		<div id="section">
 		<h2>Actions</h2>
 		<p>
-		<button onclick="killZombie()">Kill Zombie</button><br />
-		<button onclick="incrementIncome()">Increase Income ($<span id="incomeCost")>10</span>) </button><br />
+		<button onclick="fightEnemy()" class="killzomb playerAction">Kill Zombie</button>
+		<button onclick="incrementIncome()" class="incIncome playerAction">+Income ($<span id="incomeCost")>10</span>) </button><br />
 		<br /><br /><br />
 		<button onclick="moneyClick(1)">[ debug ]Make Money!</button><br />
+
 		</div >
 
+		<!--<div class="toggler">
+			<div id="effect" class="ui-widget-content ui-corner-all">
+				<span id="flash">alert</span>
+			</div>
+		</div>-->
 
 		<div id="footer">
 		<small>ZombINCremental &copy; ActivatedAlmond (2014/2015) <button onclick="saveGame()">SAVE</button><button onclick="loadGame()">LOAD</button></small> 
