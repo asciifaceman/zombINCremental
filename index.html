@@ -5,10 +5,18 @@
 	</head>
 	<body>
 		<div id="header">
-		<h1>Incremental Playground</h1>
+		<h1>ZombINCremental</h1>
 		</div>
 
 		<div id="nav">
+		Player: <span id="playerName">Noone</span>
+			<div class="levelMeter">
+				<div id="level"></div>
+				<div id="XP">
+					<div id="levelPercent"></div>
+				</div>
+			</div>
+
 		Money: $<span id="money">0</span><br />
 		Income: $<span id="income">0</span> /s <br />
 		Savings: $<span id="savings">0</span><br />
@@ -25,7 +33,7 @@
 
 
 		<div id="footer">
-		IncrementalPlayground 2014
+		<small>ZombINCremental &copy; ActivatedAlmond (2014/2015) <button onclick="saveGame()">SAVE</button><button onclick="loadGame()">LOAD</button></small> 
 		</div>
 		<script type="text/javascript" src="main.js"></script>
 	</body>
