@@ -1,0 +1,72 @@
+.killzomb{
+    outline: none;
+    background:url(./sword.png) #585858;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    width:100px;
+    height:100px;
+    color: red;
+    font-size: larger;
+    font-weight: bold;
+    border: 0px;
+}
+.killzomb:hover {
+    background-color:#686868;
+}
+.killzomb:active {
+    background-color:#ffffff;
+}
+.incIncome{
+    outline: none;
+    background:url(./income.png) #585858;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    width:100px;
+    height:100px;
+    color: red;
+    font-size: larger;
+    font-weight: bold;
+    border: 0px;
+}
+.incIncome:hover {
+    background-color:#686868;
+}
+.incIncome:active {
+    background-color:#ffffff;
+}
+.buyBankAct {
+    outline: none;
+    background:url(./bank.png) #585858;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    width:100px;
+    height:100px;
+    color: red;
+    font-size: larger;
+    font-weight: bold;
+    border: 0px;
+}
+.buyBankAct:hover {
+    background-color:#686868;
+}
+.buyBankAct:active {
+    background-color:#ffffff;
+}
+.buyXPBonus {
+    outline: none;
+    background:url(./xpbonus.png) #585858;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    width:100px;
+    height:100px;
+    color: red;
+    font-size: larger;
+    font-weight: bold;
+    border: 0px;
+}
+.buyXPBonus:hover {
+    background-color:#686868;
+}
+.buyXPBonus:active {
+    background-color:#ffffff;
+}
