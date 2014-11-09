@@ -85,15 +85,15 @@ function moneyClick(increment){
 	document.getElementById("money").innerHTML = prettify(player["money"]);
 };
 
-function incrementIncome(){
-	var incomeCost = (20 + Math.floor(5 * Math.log(player["income"] + 1))) * (player["level"] * 2);
+function incrementIncome(){ // need to add level caps
+	var incomeCost = (20 + Math.floor(5 * player["income"] + 1));
 	console.log(incomeCost);
 	if (player["money"] >= incomeCost){
 		player["income"] = (player["income"] * 1.1) + 1;
 		player["money"] = player["money"] - incomeCost;
 		document.getElementById('income').innerHTML = prettify(player["income"]);
 		document.getElementById('money').innerHTML = prettify(player["money"]);
-		var nextIncome = (20 + Math.floor(5 * Math.log(player["income"] + 1))) * (player["level"] * 2);
+		var nextIncome = (20 + Math.floor(5 * player["income"] + 1));
 		document.getElementById('incomeCost').innerHTML = prettify(nextIncome);
 	};
 };
@@ -186,7 +186,7 @@ function updatePage(){
 	document.getElementById("money").innerHTML = prettify(player["money"]);
 	document.getElementById("zombieKills").innerHTML = player["killedZombies"];
 	document.getElementById("xpcost").innerHTML = player["xpcost"];
-	var nextIncome = (20 + Math.floor(5 * Math.log(player["income"] + 1))) * (player["level"] * 2);
+	var nextIncome = (20 + Math.floor(5 * player["income"] + 1));
 	document.getElementById('incomeCost').innerHTML = prettify(nextIncome);
 };
 
