@@ -1,0 +1,32 @@
+<html>
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="interface.css" />
+	</head>
+	<body>
+		<div id="header">
+		<h1>Incremental Playground</h1>
+		</div>
+
+		<div id="nav">
+		Money: $<span id="money">0</span><br />
+		Income: $<span id="income">0</span> /s <br />
+		Savings: $<span id="savings">0</span><br />
+		</div>
+
+		<div id="section">
+		<h2>Actions</h2>
+		<p>
+		<button onclick="killZombie()">Kill Zombie</button><br />
+		<button onclick="incrementIncome()">Increase Income ($<span id="incomeCost")>10</span>) </button><br />
+		<br /><br /><br />
+		<button onclick="moneyClick(1)">[ debug ]Make Money!</button><br />
+		</div >
+
+
+		<div id="footer">
+		IncrementalPlayground 2014
+		</div>
+		<script type="text/javascript" src="main.js"></script>
+	</body>
+</html>
