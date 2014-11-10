@@ -69,9 +69,9 @@ function createEnemy(zname){
 	if (zname == "Shambler"){
 		game["enemy"] = new Zombie("Shambler", 20, .1, 1, 0);
 	} else if (zname == "Walker"){
-		game["enemy"] = new Zombie("Walker", 50, .2, 3, 10);
+		game["enemy"] = new Zombie("Walker", 50, .2, 5, 5);
 	} else if (zname == "Walker"){
-		game["enemy"] = new Zombie("Walker", 80, .3, 5, 30);
+		game["enemy"] = new Zombie("Walker", 80, .3, 8, 15);
 	}
 };
 
@@ -164,7 +164,7 @@ function buyItem(item){
 	if (item == "income"){
 		if (player["money"] >= player["incomeCost"]){
 			player["money"] -= player["incomeCost"];
-			player["income"] += getRandomArbitrary(1, Math.log(player["income"] + 5)) / 100;
+			player["income"] += getRandomArbitrary(1, Math.log(player["income"] + 5) +5) / 100;
 			player["incomeCost"] += Math.log(player["income"] * 10) + Math.log(player["incomeCost"] * 10);
 			flashMessage("Bought higher income!");
 		} else {
