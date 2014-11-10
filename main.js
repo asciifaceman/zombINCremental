@@ -6,6 +6,7 @@ var player = { // These would go to save file
 	basedamage: 5,
 	money: 0,
 	income: 0,
+	incomeCost: 2,
 	killedZ: 0,
 	damageBonus: 1,
 	damCost: 5000,
@@ -15,13 +16,13 @@ var player = { // These would go to save file
 };
 
 var inventory = {
-	knife: [0, 0.01],
-	hatchet: [0, 0.03],
-	shortsword: [0, 0.05],
-	longsword: [0, 0.08],
-	pistol: [0, 0.1],
-	rifle: [0, 0.2],
-	shotgun: [0, 0.5]
+	knife: [0, 0.01, 1],
+	hatchet: [0, 0.03, 3],
+	shortsword: [0, 0.05, 5],
+	longsword: [0, 0.08, 20],
+	pistol: [0, 0.1, 100],
+	rifle: [0, 0.2, 150],
+	shotgun: [0, 0.5, 500]
 };
 
 var game = { // Statefull Settings
@@ -68,9 +69,9 @@ function createEnemy(zname){
 	if (zname == "Shambler"){
 		game["enemy"] = new Zombie("Shambler", 20, .1, 1, 0);
 	} else if (zname == "Walker"){
-		game["enemy"] = new Zombie("Walker", 50, .2, 3, 5);
+		game["enemy"] = new Zombie("Walker", 50, .2, 3, 10);
 	} else if (zname == "Walker"){
-		game["enemy"] = new Zombie("Walker", 80, .3, 5, 8);
+		game["enemy"] = new Zombie("Walker", 80, .3, 5, 30);
 	}
 };
 
@@ -160,12 +161,30 @@ function attackButton(){
 };
 
 function buyItem(item){
+	if (item == "income"){
+		if (player["money"] >= player["incomeCost"]){
+			player["money"] -= player["incomeCost"];
+			player["income"] += getRandomArbitrary(1, Math.log(player["income"] + 5)) / 100;
+			player["incomeCost"] += Math.log(player["income"] * 10) + Math.log(player["incomeCost"] * 10);
+			flashMessage("Bought higher income!");
+		} else {
+			flashMessage("Not enough money!");
+		}
+		return 1;
+	}
 	for (var index in inventory){
 		if (index == item){
-			inventory[item][0] += 1;
-			flashMessage("Bought " + item + "!");
-		}
-	}
+			if (player["money"] >= inventory[item][2]){
+				inventory[item][0] += 1;
+				player["money"] -= inventory[item][2];
+				inventory[item][2] += Math.log(inventory[item][2]) + Math.log(inventory[item][0]);
+				flashMessage("Bought " + item + "!");	
+			} else {
+				flashMessage("Not enough money!");
+			};
+			
+		};
+	};
 };
 
 
@@ -178,15 +197,23 @@ function updateStats(){
 	xpPercent = (player["xp"] / player["levelxp"]) * 100;
 	document.getElementById("XP").style.width = xpPercent + '%';
 	document.getElementById("levelPercent").innerHTML = prettify(xpPercent) + "%";
+};
+
+function updateNonCombat(){
 	document.getElementById("level").innerHTML="Level : " + player["level"];
 	document.getElementById("zombieKills").innerHTML = player["killedZ"];
 	document.getElementById("money").innerHTML = prettify(player["money"]);
+	document.getElementById("income").innerHTML = prettify(player["income"]);
+	document.getElementById("buyKnife").innerHTML = "Buy Knife ($" + prettify(inventory["knife"][2]) + ")";
+	document.getElementById("buyIncome").innerHTML = "Income++ ($" + prettify(player["incomeCost"]) + ")";
+
 };
 
 window.setInterval(function(){ // 1000 (1s) delay for attacks
 	if (game["attacking"]){
 		game["enemy"].combat();
 	};
+	player["money"] += player["income"];
 }, 1000);
 
 window.setInterval(function() { // 10 delay for status updates
@@ -201,6 +228,7 @@ window.setInterval(function() { // 10 delay for status updates
 	if (game["enemy"]){
 		updateStats();
 	};
+	updateNonCombat();
 
 }, 10);
 
