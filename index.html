@@ -4,8 +4,8 @@
 		<link rel="stylesheet" type="text/css" href="static/interface.css" />
 		<link rel="stylesheet" type="text/css" href="static/buybuttons.css" />
 		<!--<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css" />-->
-		<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-		<script src="http://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+		<script src="https://code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
 
 	</head>
 	<body>
@@ -44,7 +44,7 @@
 		<h2>Zombies</h2>
 		<p>
 		<button onclick="toggleZOverlay()">Choose Zombie</button><br />
-		<button id="fightEnemy" onclick="buttonPress()" class="killzomb playerAction">Kill Zombies</button>
+		<button id="fightEnemy" onclick="attackButton()" class="killzomb playerAction">Kill Zombies</button>
 		<br />Current: <span id="zName">None</span>
 		<!--<button onclick="incrementIncome()" class="incIncome playerAction">+Income ($<span id="incomeCost")>10</span>) </button><br />-->
 		<br /><br /><br />
@@ -55,7 +55,7 @@
 		<div id="section">
 		<h2>Market</h2>
 		<p>
-		Nothing here yet
+		<button id="buyItem" onclick="buyItem('knife')" class="playerAction">Buy Knife</button>
 		</p>
 		</div>
 
@@ -72,7 +72,7 @@
 			<center>
 			Choose your enemy: <br />
 			<button id="shamblerbutton" onclick="createEnemy('Shambler');toggleZOverlay()" class="playerAction">Shambler (weak)</button><br />
-			<button>Walker</button><br />
+			<button id="walkerbutton" onclick="createEnemy('Walker');toggleZOverlay()" class="playerAction">Walker (less weak)</button><br />
 			<button>Runner</button><br />
 			<button>Brute</button><br />
 			<button>Exploder</button><br />
