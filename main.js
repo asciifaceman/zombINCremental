@@ -1,39 +1,44 @@
-var player = {
-	name:"Nobody",
-	level:1,
-	xp:0,
-	levelxp:20,
-	money:0, 
-	income:0, 
-	killedZombies:0,
-	damagebonus:1,
-	damcost:5000,
-	xpbonus:1,
-	xpcost:5000,
-	bankAccount: false
+var player = { // These would go to save file
+	name: "Oglaf The Weak",
+	level: 1,
+	xp: 0,
+	levelxp: 1,
+	basedamage: 5,
+	money: 0,
+	income: 0,
+	killedZ: 0,
+	damageBonus: 1,
+	damCost: 5000,
+	xpBonus: 1,
+	xpCost: 5000,
+	BankAct: false
 };
 
-var zombies = {
-	level:0,
-	hp:10,
-	maxhp:10,
-	moneyValue:1,
-	xpValue:10,
-	difficulty: 1
-}
+var inventory = {
+	knife: [1, 0.01],
+	hatchet: [0, 0.03],
+	shortsword: [3, 0.05],
+	longsword: [0, 0.08],
+	pistol: [0, 0.1],
+	rifle: [0, 0.2],
+	shotgun: [0, 0.5]
+};
 
-var killing = false;
+var game = { // Statefull Settings
+	attacking: false,
+	enemy: null
+};
+
+// System Functions 
+
 
 function prettify(input){
     var output = Math.round(input * 100)/100;
 	return output;
-}
-
-//// System functions
+};
 
 function saveGame(){
 	localStorage.setItem("playerSave",JSON.stringify(player));
-	localStorage.setItem("zombiesSave",JSON.stringify(zombies));
 	flashMessage("Game Saved!");
 };
 function loadGame(){
@@ -42,174 +47,145 @@ function loadGame(){
 		if (typeof playerGame[prop] !== "undefined") player[prop] = playerGame[prop];
 		console.log("Loaded: " + prop);
 	};
-	var zombieGame = JSON.parse(localStorage.getItem("zombiesSave"));
-	for (var prop in zombieGame){
-		if (typeof zombieGame[prop] !== "undefined") zombies[prop] = zombieGame[prop];
-		console.log("Loaded: " + prop);
-	};
 	flashMessage("Save Loaded!");
 };
 function deleteSave(){
 	localStorage.removeItem("playerSave");
-	localStorage.removeItem("zombiesSave");
 	flashMessage("Save DELETED!");
 };
 
-
-///// Gameplay Functions
-
-function buyItem(item){
-	console.log("buying: " + item);
-	if (item == "bank"){
-		if (player["money"] < 100000){
-			flashMessage("Not enough money for that purchase!");
-		}
-	} else if (item == "xpbonus"){
-		if (player["money"] < player["xpcost"]){
-			flashMessage("Not enough money for that purchase!");
-		} else {
-			if (player["xpbonus"] <= 500){
-				player["money"] -= player["xpcost"];
-				player["xpbonus"] += (Math.log(player["xpbonus"]) + 1);
-				player["xpcost"] += (Math.log(player["xpcost"]) * player["xpcost"]) / 2;	
-			} else {
-				flashMessage("You hit the bonus cap!");
-			}
-			
-		}
-	}
+// Zombie Object Setup
+function Zombie (zname, maxhp, moneyValue, xpValue) {
+	this.zname = zname;
+	this.maxhp = maxhp;
+	this.hp = maxhp;
+	this.moneyValue = moneyValue;
+	this.xpValue = xpValue;
 };
 
-function moneyClick(increment){
-	player["money"] = player["money"] + increment;
-	document.getElementById("money").innerHTML = prettify(player["money"]);
-};
-
-function incrementIncome(){ // need to add level caps
-	var incomeCost = (20 + Math.floor(5 * player["income"] + 1));
-	console.log(incomeCost);
-	if (player["money"] >= incomeCost){
-		player["income"] = (player["income"] * 1.1) + 1;
-		player["money"] = player["money"] - incomeCost;
-		document.getElementById('income').innerHTML = prettify(player["income"]);
-		document.getElementById('money').innerHTML = prettify(player["money"]);
-		var nextIncome = (20 + Math.floor(5 * player["income"] + 1));
-		document.getElementById('incomeCost').innerHTML = prettify(nextIncome);
+Zombie.prototype.kill = function(){
+	this.hp = this.maxhp;
+	player["killedZ"] += 1;
+	addXP(this.xpValue);
+}
+Zombie.prototype.attack = function(damage) {
+	if ((this.hp - damage) > 0){
+		this.hp -= damage;
+		//console.log("Attacked " + this.zname + "!");
+	} else if ((this.hp - damage) <= 0) {
+		console.log("Killed zombie!");
+		this.kill();
+	} else {
+		console.log("Killed zombie!");
+		this.kill();
 	};
+	
 };
 
-function levelUp(player, enemy){
-	//newXP = enemy["xpValue"];
-	//player["xp"] += newXP;
-	//while (player["xp"] >= player["levelxp"]){
-	//	player["xp"] - player["levelxp"];
-	//	player["level"] += 1;
-	//	player["levelxp"] = 100 * Math.sqrt(player["level"]);
-	//	console.log(player["levelxp"]);
-	//}
-	player["xp"] = 0; // ditched XP rollover due to bugs
+Zombie.prototype.combat = function(){
+	// Determine Inventory Bonus
+	invBonus = 1;
+	invBonus = getInvModifier();
+	damage = (player["basedamage"] * player["damageBonus"]) * invBonus;
+	//console.log("Damage : " + damage);
+	this.attack(damage);
+
+};
+
+// Game Stuff
+
+function levelUP(){
+	player["xp"] = 0; //ditched xp rollover
 	player["level"] += 1;
-	//player["levelxp"] = 100 * Math.sqrt(player["level"]);
-	//player["levelxp"] = ((Math.pow(player["level"], 2) / 2) * 100) - (player["level"]*100);
 	player["levelxp"] = (Math.pow(player["level"], 2) - Math.log(Math.pow(player["level"],2)));
 	console.log(player["levelxp"]);
-
-	flashMessage("Leveled up! " + player["levelxp"] + " needed for next level...");
+	flashMessage("Leveled Up! " + player["levelxp"] + " needed for next level...");
 };
 
-function killBar(enemy) {
-	//damage = (player["level"] + player["killedZombies"]) / 10;
-	damage = (player["level"] + Math.log(player["killedZombies"] + 1));
-
-	if (zombies["hp"] >= 0){
-		zombies["hp"] -= damage;
-		hpPercent = (zombies["hp"] / zombies["maxhp"]) * 100;
-		document.getElementById("HP").style.width = hpPercent + '%';
-
+function addXP(xp){
+	if ((player["xp"] + xp) < player["levelxp"]){
+		player["xp"] += xp * player["xpBonus"];
 	} else {
-		killZombie(enemy);
-		zombies["hp"] = zombies["maxhp"];
-		if (zombies["level"] <= (player["level"] + 5)){
-			zombies["level"] += 1;
-			zombies["maxhp"] += (Math.log(zombies["maxhp"]) + zombies["level"]);
-			//console.log("new zombie HP : " + zombies["maxhp"]);
-			zombies["xpValue"]++;
-			zombies["hp"] = zombies["maxhp"];
-		}
-	}
-
-};
-
-function XPBar(enemy) {
-	if ((player["xp"] + enemy["xpValue"]) < player["levelxp"]){
-		player["xp"] += enemy["xpValue"] * player["xpbonus"];
-		console.log(enemy["xpValue"] * player["xpbonus"]);
-		xpPercent = (player["xp"] / player["levelxp"]) * 100;
-		document.getElementById("XP").style.width = prettify(xpPercent + '%');
-	} else {
-		levelUp(player, enemy);
-		//player["xp"] -= player["levelxp"];
-		//player["xp"] += enemy["xpValue"];
-		xpPercent = (player["xp"] / player["levelxp"]) * 100;
-		document.getElementById("level").innerHTML="Level : " + player["level"];
-		document.getElementById("levelPercent").innerHTML=prettify(xpPercent) + "%";
-	}
-	player["killedZombies"]++;
-};
-
-function killZombie(){
-	XPBar(zombies);
-	//player["money"]++;
-	player["money"] += zombies["moneyValue"];
-	document.getElementById("zombieKills").innerHTML = player["killedZombies"];
-
-};
-
-function fightEnemy(zombies){
-	if (killing){
-		killing = false;
-	} else {
-		killing = true;	
+		levelUP();
 	}
 }
 
-///// Automation Functions
-
-function updatePage(){
-	xpPercent = (player["xp"] / player["levelxp"]) * 100;
-	hpPercent = (zombies["hp"] / zombies["maxhp"]) * 100;
-	document.getElementById("XP").style.width = prettify(xpPercent) + "%";
-	document.getElementById("level").innerHTML="Level : " + player["level"];
-	document.getElementById("levelPercent").innerHTML=prettify(xpPercent) + "%";
-	document.getElementById("hppercent").innerHTML=prettify(hpPercent) + "%";
-	document.getElementById("income").innerHTML = prettify(player["income"]);
-	document.getElementById("money").innerHTML = prettify(player["money"]);
-	document.getElementById("zombieKills").innerHTML = player["killedZombies"];
-	document.getElementById("xpcost").innerHTML = player["xpcost"];
-	var nextIncome = (20 + Math.floor(5 * player["income"] + 1));
-	document.getElementById('incomeCost').innerHTML = prettify(nextIncome);
+function getInvModifier(){
+	invBonus = 1;
+	for (var index in inventory){
+		temp = 0;
+		if(!inventory.hasOwnProperty(index)){
+			continue;
+		};
+		if (inventory[index][0] >= 1){
+			temp = (inventory[index][0] * inventory[index][1])
+		};
+		invBonus += temp;
+		
+	};
+	return invBonus;
 };
 
-window.setInterval(function(){ // 1000 delay for income and shorter stuff
-	moneyClick(player["income"]);
+function createEnemy(zname){
+	if (zname == "Shambler"){
+		game["enemy"] = new Zombie("Shambler", 20, 1, 1);
+	} else if (zname == "Walker"){
+		game["enemy"] = new Zombie("Walker", 50, 2, 20);
+	}
+}
+
+function buttonPress(){
+	if (game["enemy"]){
+		if (game["attacking"]){
+			game["attacking"] = false;
+		} else {
+			game["attacking"] = true;
+		};
+	};
+};
+
+
+// Window Functions
+
+function updateStats(){
+	hpPercent = (game["enemy"].hp / game["enemy"].maxhp) * 100;
+	document.getElementById("HP").style.width = hpPercent + '%';
+	document.getElementById("hppercent").innerHTML = prettify(hpPercent) + "%";
+	xpPercent = (player["xp"] / player["levelxp"]) * 100;
+	document.getElementById("XP").style.width = xpPercent + '%';
+	document.getElementById("levelPercent").innerHTML = prettify(xpPercent) + "%";
+	document.getElementById("level").innerHTML="Level : " + player["level"];
+	document.getElementById("zombieKills").innerHTML = player["killedZombies"];
+};
+
+window.setInterval(function(){ // 1000 (1s) delay for attacks
+	if (game["attacking"]){
+		game["enemy"].combat();
+	};
 }, 1000);
 
-window.setInterval(function() { // 100 delay for faster stuff like XP updates
-	if (killing){
-		killBar(zombies);
-	}
+window.setInterval(function() { // 10 delay for status updates
+	if (game["enemy"] == null){
+		document.getElementById("fightEnemy").disabled = true;
+	} else {
+		document.getElementById("fightEnemy").disabled = false;
+		document.getElementById("zName").innerHTML = game["enemy"].zname;
+		dps = (player["basedamage"] * player["damageBonus"]) * getInvModifier();
+		document.getElementById("playerDPS").innerHTML = dps;
+	};
+	if (game["enemy"]){
+		updateStats();
+	};
 
-	updatePage();
+}, 10);
 
-}, 100);
 
-////// Window effect functions
+// Window Effect Functions
 
 function flashMessage(message){
 	document.getElementById("flash").innerHTML = message;
 	var options = {direction: "right"};
 	$( "#flash-alert" ).show( "drop", options, 500, callback );
-
 };
 
 function callback() {
@@ -221,7 +197,32 @@ function callback() {
 $("#flash-alert").hide();
 
 
+// Overlays
 
+function toggleZOverlay(){
+	var overlay = document.getElementById('zombieoverlay');
+	var specialBox = document.getElementById('zombiebox');
+	overlay.style.opacity = .8;
+	if(overlay.style.display == "block"){
+		overlay.style.display = "none";
+		specialBox.style.display = "none";
+	} else {
+		overlay.style.display = "block";
+		specialBox.style.display = "block";
+	}
+}
+function toggleOptions(){
+	var overlay = document.getElementById('optionsoverlay');
+	var specialBox = document.getElementById('optionsbox');
+	overlay.style.opacity = .8;
+	if(overlay.style.display == "block"){
+		overlay.style.display = "none";
+		specialBox.style.display = "none";
+	} else {
+		overlay.style.display = "block";
+		specialBox.style.display = "block";
+	}
+}
 
 
 

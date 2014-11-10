@@ -19,13 +19,14 @@
 		</div>
 
 		<div id="nav">
-		Player: <span id="playerName">Noone</span>
+		Player: <span id="playerName">Noone</span><br />
 			<div class="levelMeter">
 				<div id="level"></div>
 				<div id="XP">
 					<div id="levelPercent"></div>
 				</div>
 			</div>
+		DPS: <span id="playerDPS">0</span><br />
 			<div class="enemyHP">
 				<div id="hpamount">Zombie HP:</div>
 				<div id="HP">
@@ -40,20 +41,60 @@
 		</div>
 
 		<div id="section">
-		<h2>Actions</h2>
+		<h2>Zombies</h2>
 		<p>
-		<button onclick="fightEnemy()" class="killzomb playerAction">Kill Zombies</button>
-		<button onclick="incrementIncome()" class="incIncome playerAction">+Income ($<span id="incomeCost")>10</span>) </button><br />
+		<button onclick="toggleZOverlay()">Choose Zombie</button><br />
+		<button id="fightEnemy" onclick="buttonPress()" class="killzomb playerAction">Kill Zombies</button>
+		<br />Current: <span id="zName">None</span>
+		<!--<button onclick="incrementIncome()" class="incIncome playerAction">+Income ($<span id="incomeCost")>10</span>) </button><br />-->
 		<br /><br /><br />
 		<button onclick="moneyClick(5000)">[ debug ]Make Money!</button><br />
 		</p>
 		</div >
 
-		<div id="market">
+		<div id="section">
+		<h2>Market</h2>
+		<p>
+		Nothing here yet
+		</p>
+		</div>
+
+		<div id="section">
+		<h2>Upgrades</h2>
+		<p>
+		Nothing here yet
+		</p>
+		</div>
+
+		<!-- OVERLAYS AND STUFF -->
+		<div id="zombieoverlay"></div>
+		<div id="zombiebox">
+			<center>
+			Choose your enemy: <br />
+			<button id="shamblerbutton" onclick="createEnemy('Shambler');toggleZOverlay()" class="playerAction">Shambler (weak)</button><br />
+			<button>Walker</button><br />
+			<button>Runner</button><br />
+			<button>Brute</button><br />
+			<button>Exploder</button><br />
+			<button>Shrieker</button><br />
+			<button>Radioactive</button><br />
+			<button onmousedown="toggleZOverlay()">Close</button>
+			</center>
+			
+		</div>
+		<div id="optionsoverlay"></div>
+		<div id="optionsbox">
+			<button onclick="saveGame();toggleOptions()">SAVE</button>
+			<button onclick="loadGame();toggleOptions()">LOAD</button><br /><br />
+			<button onclick="deleteSave();toggleOptions()">!!DELETE SAVE!!</button><br /><br />
+			<button onmousedown="toggleOptions()">Close</button>
+		</div>
+
+		<!--<div id="market">
 		<h2>Market</h2>
 		<p>
 		<button onclick="buyItem('xpbonus')" class="buyXPBonus playerAction">XP bonus ($<span id="xpcost">5000</span>)</button>
-		<button onclick="buyItem('bank')" class="buyBankAct playerAction">Bank Account ($100000)</button>
+		<button onclick="buyItem('bank')" class="buyBankAct playerAction">Bank Account ($100000)</button>-->
 
 		</p>
 		</div>
@@ -63,9 +104,8 @@
 				<span id="flash">alert</span>
 			</div>
 		</div>-->
-
 		<div id="footer">
-		<small>ZombINCremental v0.0.1 ALPHA &copy; ActivatedAlmond (2014/2015) <button onclick="saveGame()">SAVE</button><button onclick="loadGame()">LOAD</button></small> 
+		<small>ZombINCremental v0.0.1 ALPHA &copy; ActivatedAlmond (2014/2015) <button onclick="toggleOptions()">Options</button> </small> 
 		</div>
 		<script type="text/javascript" src="main.js"></script>
 	</body>
